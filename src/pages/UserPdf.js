@@ -70,7 +70,7 @@ export default class UserPdf extends Component {
                                     </Body>
                                     <Right>
                                         <TouchableOpacity onPress={() => Actions.pdfviewer({pdfDownloadURL:data[objArr[i]].pdfUrl})}>
-                                            <Text style={{color: "blue", fontWeight: "400"}}>Go Page</Text>
+                                            <Text style={{color: "blue", fontWeight: "400"}}>Select Pdf</Text>
                                         </TouchableOpacity>
                                     </Right>
                                 </ListItem>
