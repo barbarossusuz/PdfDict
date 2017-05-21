@@ -9,7 +9,8 @@ import {
     TouchableOpacity,
     ToastAndroid,
     BackAndroid,
-    AsyncStorage
+    AsyncStorage,
+    Keyboard
 } from 'react-native';
 
 import PDFView from 'react-native-pdf-view';
@@ -33,7 +34,10 @@ export default class PdfViewer extends Menu {
             pageNumber: 1,
             active: false,
             isLogin: false,
-            isOpen: false
+            isOpen: false,
+            pdfName: "",
+            pdfDesc:"",
+            pdfUrl:""
 
         };
         this.pdfPathFromDevice = this.props.pdfPathFromDevice || undefined;
@@ -47,7 +51,7 @@ export default class PdfViewer extends Menu {
     }
 
     renderContent() {
-        var BContent = <Button transparent onPress={() => this.setState({isOpen: false})} ><Text>X</Text></Button>;
+        var BContent = <Button transparent onPress={() => this.setState({isOpen: false})}><Text>X</Text></Button>;
 
         return (
             <View style={{flex: 1}}>
@@ -68,9 +72,34 @@ export default class PdfViewer extends Menu {
                     <View style={styles.loading}>
                         <Text>Waiting For Pdf</Text>
                     </View>}
-                <Modal isOpen={this.state.isOpen} onClosed={() => this.setState({isOpen: false})} style={[styles.modal, styles.modal4]} position={"center"} backdropContent={BContent}>
-                    <Text style={styles.text}>Modal with backdrop content</Text>
+
+                <Modal isOpen={this.state.isOpen} onClosed={() => this.setState({isOpen: false})}
+                       style={[styles.modal, styles.modal4]} position={"center"} backdropContent={BContent}>
+                    <TextInput
+                        placeholder="Pdf Name"
+                        value={this.state.pdfName}
+                        returnKeyType="next"
+                        onChangeText={(text) => this.setState({pdfName: text})}
+                        keyboardType="email-address"
+                        placeholderTextColor="#CBCBCB"
+                        style={styles.input}
+                        autoCapitalize="none"
+                        autoCorrect={false}/>
+                    <TextInput
+                        placeholder="Pdf Description"
+                        value={this.state.pdfDesc}
+                        returnKeyType="done"
+                        onChangeText={(text) => this.setState({pdfDesc: text})}
+                        keyboardType="email-address"
+                        placeholderTextColor="#CBCBCB"
+                        style={styles.input}
+                        autoCapitalize="none"
+                        autoCorrect={false}/>
+                    <TouchableOpacity style={styles.buttonContainer} onPress={() => this.uploadPdf()}>
+                        <Text style={styles.loginButton}>SAVE PDF</Text>
+                    </TouchableOpacity>
                 </Modal>
+
                 {this.renderFabButton()}
             </View>
         )
@@ -88,7 +117,7 @@ export default class PdfViewer extends Menu {
                 onPress={() => this.setState({active: !this.state.active})}>
                 <Icon name="md-albums"/>
                 {this.state.isLogin === true ?
-                    <Button onPress={this.logOut()} style={{backgroundColor: '#DD5144'}}>
+                    <Button onPress={() => this.logOut()} style={{backgroundColor: '#DD5144'}}>
                         <Icon size={25} color="white" name="md-log-out"/>
                     </Button>
                     :
@@ -101,7 +130,7 @@ export default class PdfViewer extends Menu {
                         <Icon size={25} color="white" name="md-cloud-download"/>
                     </Button> : null}
 
-                {this.state.isLogin === true ?
+                {this.state.isLogin === true && this.pdfPathFromDevice === undefined ?
                     <Button onPress={() => this.upload()} style={{backgroundColor: '#3B5998'}}>
                         <Icon size={25} color="white" name="md-cloud-upload"/>
                     </Button> : null}
@@ -111,9 +140,24 @@ export default class PdfViewer extends Menu {
         );
     }
 
-    upload(){
-        this.setState({isOpen:true});
+
+    uploadPdf() {
+        var user = firebaseRef.auth().currentUser;
+        firebaseRef.database().ref("pdfStore/" + user.uid + "/").push({
+            pdfName: this.state.pdfName,
+            pdfDesc: this.state.pdfDesc,
+            pdfUrl: this.state.pdfUrl
+        }).then(() => {
+            this.setState({isOpen:false,pdfName:"",pdfDesc:""});
+            Keyboard.dismiss();
+            ToastAndroid.showWithGravity("Pdf successfully saved", ToastAndroid.SHORT, ToastAndroid.CENTER);
+        });
     }
+
+    upload() {
+        this.setState({isOpen: true, active: false});
+    }
+
     logOut() {
 
         firebaseRef.auth().signOut().then(function () {
@@ -141,7 +185,7 @@ export default class PdfViewer extends Menu {
                 toFile: this.pdfPathFromUrl
             };
             RNFS.downloadFile(options).promise.then(res => {
-                this.setState({isPdfDownload: true});
+                this.setState({isPdfDownload: true,pdfUrl:this.pdfDownloadURL});
                 this.pdfDownloadURL = "";
             }).catch(err => {
                 ToastAndroid.showWithGravity("Invalid Url", ToastAndroid.LONG, ToastAndroid.CENTER);
@@ -165,6 +209,7 @@ export default class PdfViewer extends Menu {
                 this.setState({isLogin: false});
             }
         });
+        console.ignoredYellowBox = ['Setting a timer'];
     }
 
     componentWillMount() {
@@ -172,20 +217,6 @@ export default class PdfViewer extends Menu {
     }
 }
 const styles = StyleSheet.create({
-    header: {
-        flex: 1,
-        flexDirection: "row",
-        alignItems: "center",
-        backgroundColor: "#1E88E5",
-        justifyContent: "space-between",
-    },
-    footer: {
-        flex: 1,
-        flexDirection: "row",
-        alignItems: "center",
-        backgroundColor: "#1E88E5",
-        justifyContent: "space-around",
-    },
     loading: {
         flex: 14,
         justifyContent: 'center',
@@ -198,33 +229,31 @@ const styles = StyleSheet.create({
         flexDirection: "row",
         alignItems: "center",
     },
-
-
+    buttonContainer: {
+        marginTop: 20,
+        backgroundColor: "#1E88E5",
+        paddingVertical: 15,
+        borderWidth: 0.8,
+        borderRadius: 30
+    },
+    loginButton: {
+        textAlign: "center",
+        color: "#ffffff",
+        fontWeight: "700"
+    },
     modal: {
         justifyContent: 'center',
-        alignItems: 'center'
+        backgroundColor: "#BBDEFB",
+        padding:15
     },
-
+    input: {
+        height: 40,
+        color: "#ffffff",
+        paddingHorizontal: 10
+    },
     modal4: {
         height: 300
     },
-
-    btn: {
-        margin: 10,
-        backgroundColor: "#3B5998",
-        color: "white",
-        padding: 10
-    },
-
-    btnModal: {
-        position: "absolute",
-        top: 0,
-        right: 0,
-        width: 50,
-        height: 50,
-        backgroundColor: "transparent"
-    },
-
     text: {
         color: "black",
         fontSize: 22

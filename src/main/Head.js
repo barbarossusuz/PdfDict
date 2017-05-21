@@ -30,7 +30,7 @@ export default class Head extends Component {
                 </Left>
                 <Body>
                 <TouchableOpacity onPress={() => this.backButton() }>
-                    <Text style={{fontWeight: "bold", color: "white"}}>{(this.props.fileName).toUpperCase()}</Text>
+                    <Text style={{fontWeight: "bold", color: "white"}}>{(this.props.fileName).toUpperCase() || "PDFDICT"}</Text>
                 </TouchableOpacity>
                 </Body>
                 <Right>

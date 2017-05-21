@@ -26,14 +26,17 @@ export default class WelcomePage extends Component {
         super(props);
         this.state = {
             file: undefined,
-            isLogin: false
+            isLogin: false,
+            isOpen: false,
         }
 
     }
 
     render() {
+
         return (
             <View style={styles.container}>
+
                 <View style={{alignItems: "center"}}>
 
                     <View style={{marginTop: 70}}>
@@ -75,9 +78,7 @@ export default class WelcomePage extends Component {
                         </View></View> : null
                     }
 
-
                 </View>
-
 
             </View>
 
@@ -101,7 +102,7 @@ export default class WelcomePage extends Component {
     }
 
     getPdfFromDatabase() {
-        Actions.pdfviewer();
+        Actions.userpdf();
     }
 
     onPress() {
@@ -181,5 +182,13 @@ const styles = StyleSheet.create({
         borderWidth: 1 / PixelRatio.get(),
         margin: 5,
         padding: 5
-    }
+    },
+    modal: {
+        justifyContent: 'center',
+        backgroundColor: "#BBDEFB",
+        padding:15
+    },
+    modal4: {
+        height: 300
+    },
 });
