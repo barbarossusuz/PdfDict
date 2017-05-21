@@ -142,6 +142,10 @@ export default class PdfViewer extends Menu {
 
 
     uploadPdf() {
+        if(this.state.pdfDesc==="" && this.state.pdfName ===""){
+            ToastAndroid.showWithGravity("Pdf Name and Pdf Description cannot be empty", ToastAndroid.SHORT, ToastAndroid.CENTER);
+        }
+        else {
         var user = firebaseRef.auth().currentUser;
         firebaseRef.database().ref("pdfStore/" + user.uid + "/").push({
             pdfName: this.state.pdfName,
@@ -152,6 +156,7 @@ export default class PdfViewer extends Menu {
             Keyboard.dismiss();
             ToastAndroid.showWithGravity("Pdf successfully saved", ToastAndroid.SHORT, ToastAndroid.CENTER);
         });
+        }
     }
 
     upload() {
