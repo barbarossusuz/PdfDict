@@ -65,7 +65,7 @@ export default class UserPdf extends Component {
                                 <ListItem>
                                     <Thumbnail square size={100} source={require("../images/pdf.png")}/>
                                     <Body>
-                                    <Text>{data[objArr[i]].pdfName}</Text>
+                                    <Text style={{fontWeight: "bold"}}>{data[objArr[i]].pdfName}</Text>
                                     <Text note> {data[objArr[i]].pdfDesc}</Text>
                                     </Body>
                                     <Right>

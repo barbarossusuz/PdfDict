@@ -243,12 +243,12 @@ const styles = StyleSheet.create({
     },
     modal: {
         justifyContent: 'center',
-        backgroundColor: "#BBDEFB",
+        backgroundColor: "#ffffff",
         padding:15
     },
     input: {
         height: 40,
-        color: "#ffffff",
+        color: "#000000",
         paddingHorizontal: 10
     },
     modal4: {

@@ -39,7 +39,7 @@ export default class SideBar extends Component {
             <View style={{backgroundColor: "#BBDEFB", width: width / 1.2, height: height, flexDirection: "column"}}>
                 <WebView
                     scalesPageToFit={true}
-                    source={{uri: tureng}}
+                    source={{uri: google}}
                 />
 
             </View>

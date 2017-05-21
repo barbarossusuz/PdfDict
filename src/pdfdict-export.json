@@ -1,0 +1,16 @@
+{
+  "pdfStore" : {
+    "7GByR0nVOwc31n7D7hKxPCIR9wh2" : {
+      "-KkgPokCiQ6SLC0BeCVF" : {
+        "pdfDesc" : "Example pdf for presentation",
+        "pdfName" : "ExamplePdf",
+        "pdfUrl" : "http://www.pdf995.com/samples/pdf.pdf"
+      },
+      "-Kkgb-ygO2MGDOmk3pQo" : {
+        "pdfDesc" : "Example pdf 2 for presentation",
+        "pdfName" : "ExamplePDF2",
+        "pdfUrl" : "http://foersom.com/net/HowTo/data/OoPdfFormExample.pdf"
+      }
+    }
+  }
+}
