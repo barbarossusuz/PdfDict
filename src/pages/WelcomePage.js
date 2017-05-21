@@ -72,7 +72,7 @@ export default class WelcomePage extends Component {
                         <View style={{marginTop: 70}}>
                             <Button
                                 onPress={() => this.getPdfFromDatabase()}
-                                title="Select From Saved Pdf"
+                                title="Select Pdf From Database"
                                 color="#1E88E5"
                                 accessibilityLabel="Select Pdf From Database"
                             />
