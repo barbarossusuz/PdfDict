@@ -37,33 +37,15 @@ export default class SideBar extends Component {
 
         return (
             <View style={{backgroundColor: "#BBDEFB", width: width / 1.2, height: height, flexDirection: "column"}}>
-                <View>
                 <WebView
                     scalesPageToFit={true}
-                    source={{uri: google}}
+                    source={{uri: tureng}}
                 />
-                </View>
-                <View>
 
-                </View>
             </View>
         );
     }
 
-    // _logOut() {
-    //     console.log("tıklandı");
-    //     AsyncStorage.removeItem('userData').then(() => {
-    //         firebaseRef.auth().signOut().then(function () {
-    //             Actions.login();
-    //         }).catch(function (error) {
-    //             var errorCode = error.code;
-    //             var errorMessage = error.message;
-    //
-    //             ToastAndroid.showWithGravity(errorCode, ToastAndroid.SHORT, ToastAndroid.CENTER);
-    //         });
-    //     });
-    //
-    // }
 
     componentDidMount(){
     }

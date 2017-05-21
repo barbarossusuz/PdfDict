@@ -7,7 +7,7 @@ import {
     View
 } from 'react-native';
 
-import { Router, Scene } from 'react-native-router-flux';
+import { Router, Scene, ActionConst } from 'react-native-router-flux';
 
 import WelcomePage from "./src/pages/WelcomePage";
 import PdfViewer from "./src/pages/PdfViewer";
@@ -26,11 +26,11 @@ class PdfDict extends Component {
         return (
             <Router >
                 <Scene key="root" hideNavBar={true}>
-                    <Scene key="welcomepage"  component={WelcomePage} />
+                    <Scene key="welcomepage"  component={WelcomePage} type={ActionConst.RESET}/>
                     <Scene key="splashscreen"  component={SplashScreen}   initial={true} />
                     <Scene key="pdfviewer"  component={PdfViewer} />
-                    <Scene key="login"  component={Login} />
-                    <Scene key="register"  component={Register} />
+                    <Scene key="login"  component={Login}  type={ActionConst.RESET} />
+                    <Scene key="register"  component={Register}  />
                 </Scene>
             </Router>
         )

@@ -51,7 +51,7 @@ export default class WelcomePage extends Component {
                     <View style={{marginTop: 110}}>
                         <Text
                             style={{color: "white", fontWeight: "bold", fontSize: 16}}>Please Write Pdf Url Here :
-                            </Text>
+                        </Text>
                         <TextInput
                             style={{height: 40}}
                             autoCorrect={false}
@@ -60,25 +60,19 @@ export default class WelcomePage extends Component {
                         />
 
                     </View>
-                    <Text
-                        style={{marginTop: 25, color: "white", fontWeight: "bold", fontSize: 20}}>OR</Text>
 
-                    {this.state.isLogin===true?
-                    <View style={{marginTop: 70}}>
-                        <Button
-                            onPress={() => this.getPdfFromDatabase()}
-                            title="Select From Saved Pdf"
-                            color="#1E88E5"
-                            accessibilityLabel="Select Pdf From Database"
-                        />
-                    </View>:<View style={{marginTop: 70}}>
+                    {this.state.isLogin === true ? <View>
+                        <Text
+                            style={{marginTop: 25, color: "white", fontWeight: "bold", fontSize: 20}}>OR</Text>
+
+                        <View style={{marginTop: 70}}>
                             <Button
-                                onPress={() => this.goLoginPage()}
-                                title="Sign In - Sign Up"
+                                onPress={() => this.getPdfFromDatabase()}
+                                title="Select From Saved Pdf"
                                 color="#1E88E5"
                                 accessibilityLabel="Select Pdf From Database"
                             />
-                        </View>
+                        </View></View> : null
                     }
 
 
@@ -94,20 +88,7 @@ export default class WelcomePage extends Component {
         let ornek = "http://www.pdf995.com/samples/pdf.pdf";
 
         if (text.replace(/^.*[\\\/]/, '').slice(-4) === ".pdf") {
-            AsyncStorage.getItem('pdfPathFromDevice').then((user_data_json) => {
-                let path = JSON.parse(user_data_json);
-                if(path !== null){
-                    AsyncStorage.removeItem('pdfPathFromDevice').then(() => {
-                        AsyncStorage.setItem('pdfDownloadURL', JSON.stringify(text)).then(()=>{
-                            Actions.pdfviewer({pdfDownloadURL: text});
-                        });
-                    });
-                }else{
-                    AsyncStorage.setItem('pdfDownloadURL', JSON.stringify(text)).then(()=>{
-                        Actions.pdfviewer({pdfDownloadURL: text});
-                    });
-                }
-            });
+            Actions.pdfviewer({pdfDownloadURL: text});
         }
         else {
             ToastAndroid.showWithGravity("Entered url does not contain .pdf extension", ToastAndroid.LONG, ToastAndroid.TOP);
@@ -115,13 +96,14 @@ export default class WelcomePage extends Component {
         }
     }
 
-    goLoginPage(){
+    goLoginPage() {
         Actions.login();
     }
 
-    getPdfFromDatabase(){
-
+    getPdfFromDatabase() {
+        Actions.pdfviewer();
     }
+
     onPress() {
         const options = {
             title: 'File Picker',
@@ -143,23 +125,8 @@ export default class WelcomePage extends Component {
                     file: response
                 });
                 if (this.state.file) {
-                    if ((response.path).replace(/^.*[\\\/]/, '').slice(-4) === ".pdf") {
-                        AsyncStorage.getItem('pdfDownloadURL').then((user_data_json) => {
-                            let path = JSON.parse(user_data_json);
-                            if(path !== null){
-                                AsyncStorage.removeItem('pdfDownloadURL').then(() => {
-                                    AsyncStorage.setItem('pdfPathFromDevice', JSON.stringify(response.path)).then(()=>{
-                                        Actions.pdfviewer({pdfPathFromDevice: response.path});
-                                    });
-
-                                });
-                            }else{
-                                AsyncStorage.setItem('pdfPathFromDevice', JSON.stringify(response.path)).then(()=>{
-                                    Actions.pdfviewer({pdfPathFromDevice: response.path});
-                                });
-                            }
-                        });
-
+                    if ((response.path).replace(/^.*[\\\/]/, '').slice(-4) === ".pdf"){
+                        Actions.pdfviewer({pdfPathFromDevice: response.path});
                     }
                     else {
                         ToastAndroid.showWithGravity("Selected file is not a pdf file", ToastAndroid.LONG, ToastAndroid.TOP);
@@ -171,15 +138,15 @@ export default class WelcomePage extends Component {
     }
 
 
-    componentWillMount(){
+    componentWillMount() {
         firebaseRef.auth().onAuthStateChanged((user1) => {
             if (user1) {
                 var user = firebaseRef.auth().currentUser;
                 if (user !== null) {
-                    this.setState({isLogin:true});
+                    this.setState({isLogin: true});
                 }
             } else {
-                this.setState({isLogin:false});
+                this.setState({isLogin: false});
             }
         });
     }

@@ -19,6 +19,7 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import Menu from "../main/Menu"
 import {Content, Fab, Button} from "native-base";
 import {firebaseRef} from "../Firebase";
+import Modal from 'react-native-modalbox';
 
 
 export default class PdfViewer extends Menu {
@@ -31,7 +32,8 @@ export default class PdfViewer extends Menu {
             isPdfDownload: false,
             pageNumber: 1,
             active: false,
-            isLogin: false
+            isLogin: false,
+            isOpen: false
 
         };
         this.pdfPathFromDevice = this.props.pdfPathFromDevice || undefined;
@@ -45,6 +47,7 @@ export default class PdfViewer extends Menu {
     }
 
     renderContent() {
+        var BContent = <Button transparent onPress={() => this.setState({isOpen: false})} ><Text>X</Text></Button>;
 
         return (
             <View style={{flex: 1}}>
@@ -65,14 +68,16 @@ export default class PdfViewer extends Menu {
                     <View style={styles.loading}>
                         <Text>Waiting For Pdf</Text>
                     </View>}
-
-                {this.renderDeneme()}
+                <Modal isOpen={this.state.isOpen} onClosed={() => this.setState({isOpen: false})} style={[styles.modal, styles.modal4]} position={"center"} backdropContent={BContent}>
+                    <Text style={styles.text}>Modal with backdrop content</Text>
+                </Modal>
+                {this.renderFabButton()}
             </View>
         )
     }
 
 
-    renderDeneme() {
+    renderFabButton() {
         return (
             <Fab
                 active={this.state.active}
@@ -82,20 +87,44 @@ export default class PdfViewer extends Menu {
                 position="bottomRight"
                 onPress={() => this.setState({active: !this.state.active})}>
                 <Icon name="md-albums"/>
-                <Button style={{backgroundColor: '#3B5998'}}>
-                    <Icon size={25} color="white" name="md-add"/>
-                </Button>
                 {this.state.isLogin === true ?
-                    < Button style={{backgroundColor: '#3B5998'}}>
+                    <Button onPress={this.logOut()} style={{backgroundColor: '#DD5144'}}>
                         <Icon size={25} color="white" name="md-log-out"/>
-                    </Button> :
-                    <Button style={{backgroundColor: '#DD5144'}}>
+                    </Button>
+                    :
+                    <Button onPress={() => Actions.login()} style={{backgroundColor: '#DD5144'}}>
                         <Icon size={25} color="white" name="md-log-in"/>
                     </Button>}
+
+                {this.state.isLogin === true ?
+                    <Button style={{backgroundColor: '#3B5998'}}>
+                        <Icon size={25} color="white" name="md-cloud-download"/>
+                    </Button> : null}
+
+                {this.state.isLogin === true ?
+                    <Button onPress={() => this.upload()} style={{backgroundColor: '#3B5998'}}>
+                        <Icon size={25} color="white" name="md-cloud-upload"/>
+                    </Button> : null}
 
 
             </Fab>
         );
+    }
+
+    upload(){
+        this.setState({isOpen:true});
+    }
+    logOut() {
+
+        firebaseRef.auth().signOut().then(function () {
+            Actions.login();
+        }).catch(function (error) {
+            var errorCode = error.code;
+            var errorMessage = error.message;
+
+            ToastAndroid.showWithGravity(errorCode, ToastAndroid.SHORT, ToastAndroid.CENTER);
+        });
+
     }
 
     zoom(val = 1.1) {
@@ -126,9 +155,6 @@ export default class PdfViewer extends Menu {
 
     componentDidMount() {
         this.downloadFileToDevice();
-    }
-
-    componentWillMount() {
         firebaseRef.auth().onAuthStateChanged((user1) => {
             if (user1) {
                 var user = firebaseRef.auth().currentUser;
@@ -139,6 +165,10 @@ export default class PdfViewer extends Menu {
                 this.setState({isLogin: false});
             }
         });
+    }
+
+    componentWillMount() {
+
     }
 }
 const styles = StyleSheet.create({
@@ -167,5 +197,36 @@ const styles = StyleSheet.create({
     headerItems: {
         flexDirection: "row",
         alignItems: "center",
+    },
+
+
+    modal: {
+        justifyContent: 'center',
+        alignItems: 'center'
+    },
+
+    modal4: {
+        height: 300
+    },
+
+    btn: {
+        margin: 10,
+        backgroundColor: "#3B5998",
+        color: "white",
+        padding: 10
+    },
+
+    btnModal: {
+        position: "absolute",
+        top: 0,
+        right: 0,
+        width: 50,
+        height: 50,
+        backgroundColor: "transparent"
+    },
+
+    text: {
+        color: "black",
+        fontSize: 22
     }
 });

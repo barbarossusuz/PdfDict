@@ -12,6 +12,8 @@ import {
 } from 'react-native';
 import {firebaseRef} from "../Firebase";
 import {Actions} from "react-native-router-flux";
+import {Button} from "native-base";
+
 
 export default class Login extends Component {
     constructor(props) {
@@ -26,47 +28,43 @@ export default class Login extends Component {
         return (
             <View style={styles.container}>
 
-                <View>
-                    <View style={styles.loginContainer}>
-                        <TextInput
-                            placeholder="EMAIL"
-                            value={this.state.email}
-                            returnKeyType="next"
-                            onChangeText={(text)=> this.setState({email:text})}
-                            keyboardType="email-address"
-                            placeholderTextColor="#ffffff"
-                            style={styles.input}
-                            autoCapitalize="none"
-                            autoCorrect={false}/>
-                        <TextInput
-                            placeholder="PASSWORD"
-                            value={this.state.password}
-                            returnKeyType="done"
-                            secureTextEntry={true}
-                            onChangeText={(text)=> this.setState({password:text})}
-                            placeholderTextColor="#ffffff"
-                            style={styles.input}
-                            autoCapitalize="none"
-                            autoCorrect={false}/>
+                <TextInput
+                    placeholder="EMAIL"
+                    value={this.state.email}
+                    returnKeyType="next"
+                    onChangeText={(text) => this.setState({email: text})}
+                    keyboardType="email-address"
+                    placeholderTextColor="#ffffff"
+                    style={styles.input}
+                    autoCapitalize="none"
+                    autoCorrect={false}/>
+                <TextInput
+                    placeholder="PASSWORD"
+                    value={this.state.password}
+                    returnKeyType="done"
+                    secureTextEntry={true}
+                    onChangeText={(text) => this.setState({password: text})}
+                    placeholderTextColor="#ffffff"
+                    style={styles.input}
+                    autoCapitalize="none"
+                    autoCorrect={false}/>
 
+                <TouchableOpacity style={styles.buttonContainer} onPress={() => this.login()}>
+                    <Text style={styles.loginButton}>SIGN IN</Text>
+                </TouchableOpacity>
 
-                        <TouchableOpacity style={styles.buttonContainer} onPress={()=>this._login()}>
-                            <Text style={styles.loginButton}>SIGN IN</Text>
-                        </TouchableOpacity>
-                        <View style={{alignItems: "center"}}>
-                            <TouchableOpacity onPress={()=>this._goRegister()}>
-                                <Text style={styles.registerButton}>Create Account?</Text>
-                            </TouchableOpacity>
-                        </View>
-                    </View>
+                <View style={{alignItems: "center"}}>
+                    <TouchableOpacity onPress={() => this.goRegisterPage()}>
+                        <Text style={styles.registerButton}>Create Account?</Text>
+                    </TouchableOpacity>
                 </View>
             </View>
 
         );
     }
 
-    _login(){
-        if(this.state.password && this.state.email) {
+    login() {
+        if (this.state.password && this.state.email) {
             firebaseRef.auth().signInWithEmailAndPassword(this.state.email, this.state.password).then((userData) => {
                 {
                     Keyboard.dismiss();
@@ -89,29 +87,32 @@ export default class Login extends Component {
                 }
                 console.log(error);
             });
-        }else {
+        } else {
             ToastAndroid.showWithGravity("Email or password can not be empty", ToastAndroid.SHORT, ToastAndroid.CENTER);
         }
     }
 
-    _goRegister() {
+    goRegisterPage() {
         Actions.register();
+    }
+
+    backtoMainPage() {
+        Actions.welcomepage();
     }
 
 }
 const styles = StyleSheet.create({
     container: {
         flex: 1,
+        justifyContent: "center",
         backgroundColor: "#1565C0"
     },
-    logoContainer: {
-        alignItems: "center",
-        flexGrow: 1,
-        justifyContent: "center"
-    },
-    logo: {
-        width: 100,
-        height: 100
+    buttonContainer: {
+        marginTop: 20,
+        backgroundColor: "#1E88E5",
+        paddingVertical: 15,
+        borderWidth: 0.8,
+        borderRadius: 30
     },
     title: {
         color: "#ffffff",
@@ -120,20 +121,11 @@ const styles = StyleSheet.create({
         textAlign: "center",
         opacity: 0.9
     },
-    //login
-    loginContainer: {
-        padding: 20,
-    },
     input: {
         height: 40,
         marginBottom: 10,
         color: "#ffffff",
         paddingHorizontal: 10
-    },
-    buttonContainer: {
-        backgroundColor: "#1E88E5",
-        paddingVertical: 15,
-        borderRadius: 30
     },
     loginButton: {
         textAlign: "center",
