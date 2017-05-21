@@ -126,7 +126,7 @@ export default class PdfViewer extends Menu {
                     </Button>}
 
                 {this.state.isLogin === true ?
-                    <Button style={{backgroundColor: '#3B5998'}}>
+                    <Button onPress={() => Actions.userpdf()} style={{backgroundColor: '#3B5998'}}>
                         <Icon size={25} color="white" name="md-cloud-download"/>
                     </Button> : null}
 

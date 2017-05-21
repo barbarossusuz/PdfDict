@@ -64,7 +64,8 @@ export default class WelcomePage extends Component {
 
                     </View>
 
-                    {this.state.isLogin === true ? <View>
+                    {this.state.isLogin === true ?
+                        <View style={{alignItems: "center"}}>
                         <Text
                             style={{marginTop: 25, color: "white", fontWeight: "bold", fontSize: 20}}>OR</Text>
 
@@ -75,7 +76,18 @@ export default class WelcomePage extends Component {
                                 color="#1E88E5"
                                 accessibilityLabel="Select Pdf From Database"
                             />
-                        </View></View> : null
+                        </View></View> :  <View style={{alignItems: "center"}}>
+                            <Text
+                                style={{marginTop: 25, color: "white", fontWeight: "bold", fontSize: 20}}>OR</Text>
+
+                            <View style={{marginTop: 70}}>
+                                <Button
+                                    onPress={() => this.goLoginPage()}
+                                    title="SIGN IN - SIGN UP"
+                                    color="#1E88E5"
+                                    accessibilityLabel="Log in or create account"
+                                />
+                            </View></View>
                     }
 
                 </View>

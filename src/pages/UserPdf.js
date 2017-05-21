@@ -1,22 +1,15 @@
 'use strict';
 import  React, {Component} from 'react';
 import {
-    AppRegistry,
     StyleSheet,
     Text,
     View,
-    TextInput,
-    Button,
-    ToastAndroid,
     TouchableOpacity,
-    PixelRatio,
-    Image,
-    NativeModules,
-    AsyncStorage
 } from 'react-native';
 import {Actions} from 'react-native-router-flux';
 import {firebaseRef} from "../Firebase";
-import {Content,Container} from "native-base";
+import {Left,Content,Container,Header,List,Thumbnail,Body,Right,ListItem,Button} from "native-base";
+import Icon from "react-native-vector-icons/Ionicons";
 
 
 var FilePickerManager = require('NativeModules').FilePickerManager;
@@ -35,8 +28,19 @@ export default class UserPdf extends Component {
     render() {
         return (
             <Container>
+                <Header
+                    androidStatusBarColor="#1E88E5"
+                    style={{backgroundColor: "#1565C0"}}>
+                    <Left>
+                        <Button transparent onPress={()=> Actions.pop()}><Icon size={25} color="white"
+                                                                                  name='md-arrow-back'/></Button>
+                    </Left>
+                    <Body>
+                        <Text style={{fontWeight: "bold", color: "white"}}>PDFDICT</Text>
+                    </Body>
+                </Header>
                 <Content>
-
+                    {this.state.renderArr}
                 </Content>
             </Container>
         );
@@ -45,35 +49,44 @@ export default class UserPdf extends Component {
 
     getAllPdfFiles(){
         var user = firebaseRef.auth().currentUser;
+        console.log("data",user.uid);
+
         let arr=[];
         let data;
-        firebaseRef.database().ref(user.uid+"/").once("value").then((value) => {
+        let objArr;
+        firebaseRef.database().ref("pdfStore/"+user.uid+"/").once("value").then((value) => {
             data=value.val();
-            console.log("data",data);
+            objArr=Object.keys(data);
+            console.log("data",data[objArr[0]]);
         }).then(() => {
-            arr.push(
-                <View key={searchData[i].content.key}>
-                    <List>
-                        <ListItem>
-                            <Thumbnail square size={80} source={{uri: searchData[i].content.url}}/>
-                            <Body>
-                            <Text>{(searchData[i].cityName).toUpperCase()}</Text>
-                            <Text note> {searchData[i].content.hotelName}</Text>
-                            </Body>
-                            <Right>
-                                <TouchableOpacity onPress={() => this.goPage(searchData[i], i)}>
-                                    <Text style={{color: "blue", fontWeight: "400"}}>Go Page</Text>
-                                </TouchableOpacity>
-                            </Right>
-                        </ListItem>
-                    </List>
-                </View>
-            )
+            for(let i=0; i<objArr.length; i++){
+                    arr.push(
+                            <List  key={i}>
+                                <ListItem>
+                                    <Thumbnail square size={100} source={require("../images/pdf.png")}/>
+                                    <Body>
+                                    <Text>{data[objArr[i]].pdfName}</Text>
+                                    <Text note> {data[objArr[i]].pdfDesc}</Text>
+                                    </Body>
+                                    <Right>
+                                        <TouchableOpacity onPress={() => Actions.pdfviewer({pdfDownloadURL:data[objArr[i]].pdfUrl})}>
+                                            <Text style={{color: "blue", fontWeight: "400"}}>Go Page</Text>
+                                        </TouchableOpacity>
+                                    </Right>
+                                </ListItem>
+                            </List>
+                    )
+            }
+            this.setState({renderArr:arr});
+
         });
-        this.setState({renderArr:arr});
     }
+
 
     componentWillMount(){
         this.getAllPdfFiles();
+    }
+    componentDidMount(){
+        console.ignoredYellowBox = ['Setting a timer'];
     }
 }

@@ -27,10 +27,9 @@ class PdfDict extends Component {
         return (
             <Router >
                 <Scene key="root" hideNavBar={true}>
-                    <Scene key="welcomepage"  component={WelcomePage} type={ActionConst.RESET}/>
-                    <Scene key="splashscreen"  component={SplashScreen}   initial={true} />
-                    <Scene key="pdfviewer"  component={PdfViewer} />
-                    <Scene key="login"  component={Login}  type={ActionConst.RESET} />
+                    <Scene key="welcomepage"  component={WelcomePage} initial={true} type={ActionConst.RESET}/>
+                    <Scene key="pdfviewer"  component={PdfViewer}  type={ActionConst.RESET} />
+                    <Scene key="login"  component={Login} />
                     <Scene key="register"  component={Register}  />
                     <Scene key="userpdf"  component={UserPdf}  />
                 </Scene>
